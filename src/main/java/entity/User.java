@@ -14,7 +14,17 @@ public class User {
 	
 	public User() { }
 	
-	// default값 제외한 생성자
+	// update할 때 pwd제외
+	public User(String uid, String uname, String email, String profile, String addr) {
+		super();
+		this.uid = uid;
+		this.uname = uname;
+		this.email = email;
+		this.profile = profile;
+		this.addr = addr;
+	}	
+	
+	// insert할 때 default값 제외한 생성자 
 	public User(String uid, String pwd, String uname, String email, String profile, String addr) {
 		super();
 		this.uid = uid;

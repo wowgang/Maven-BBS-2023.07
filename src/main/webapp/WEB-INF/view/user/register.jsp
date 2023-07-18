@@ -14,13 +14,14 @@
             </div>
         </div>
     </nav>
+    
     <div class="container" style="margin-top: 300px;">
         <div class="row">
             <div class="col-4"></div>
             <div class="col-4">
 			    <h3>회원 가입</h3>
 			    <hr>
-			    <form action="/bbs/users/register" method="post">
+			    <form action="/bbs/user/register" method="post" enctype="multipart/form-data">
 	                <table class="table table-borderless">
 	                    <tr>
 	                        <td style="width:35%"><label class="col-form-label">사용자 ID</label></td>
