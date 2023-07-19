@@ -20,7 +20,7 @@ CREATE TABLE board
 	modTime datetime DEFAULT CURRENT_TIMESTAMP,
 	viewCount int DEFAULT 0,
 	replyCount int DEFAULT 0,
-	isDelted int DEFAULT 0,
+	isDeleted int DEFAULT 0,
 	files varchar(400),
 	PRIMARY KEY (bid)
 );

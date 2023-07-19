@@ -55,7 +55,9 @@ public class UserController extends HttpServlet {
 			int totalUsers = uDao.getUserCount();
 			int totalPages = (int) Math.ceil(totalUsers / 10.);
 			// jsp파일 가기전에 
-			session.setAttribute("currentUserPage", page);	// board에서도 사용할수있어서 request말고 session으로 바꿈
+			session.setAttribute("currentUserPage", page);	// board에서도 사용할수있어서 request말고 session으로 바꿈 
+			// session : Web Browser가 켜져 있는 동안 값 유지
+			// application : Server가 구동이 되고 있는 동안에는 계속 값 유지
 			List<String> pageList = new ArrayList<>();
 			for (int i = 1; i <= totalPages; i++) // 100명이 넘으면 i가 1부터 시작하면 오류남
 				pageList.add(String.valueOf(i)); // 문자열 형태로 변환된 정수(i) 값을 pageList라는 리스트에 추가
@@ -86,7 +88,8 @@ public class UserController extends HttpServlet {
 					
 					// 환영 메세지
 					request.setAttribute("msg", user.getUname() + "님 환영합니다.");
-					request.setAttribute("url", "/bbs/user/list?page=1");
+//					request.setAttribute("url", "/bbs/user/list?page=1");
+					request.setAttribute("url", "/bbs/board/list?p=1&f=&q=");
 					rd = request.getRequestDispatcher("/WEB-INF/view/common/alertMsg.jsp");
 					rd.forward(request, response);
 				} else if (result == UserService.WRONG_PASSWORD) {
@@ -121,7 +124,7 @@ public class UserController extends HttpServlet {
 					filename = filePart.getSubmittedFileName(); // cat.png
 					int dotPosition = filename.indexOf(".");	// .의 위치는 인덱스 3번
 					String firstPart = filename.substring(0, dotPosition); // 점 이전의 부분은 "cat"이므로 firstPart 변수에 "cat"이
-					filename.replace(firstPart, uid);	//  firstPart 부분을 uid로 치환
+					filename = filename.replace(firstPart, uid);	//  firstPart 부분을 uid로 치환
 					filePart.write(PROFILE_PATH + filename);
 				} catch (Exception e) {
 					System.out.println("프로필 사진을 입력하지 않았습니다.");
@@ -174,26 +177,29 @@ public class UserController extends HttpServlet {
 
 				try {
 					filename = filePart.getSubmittedFileName(); // cat.png
+					int dotPosition = filename.indexOf(".");	// .의 위치는 인덱스 3번
 					if (!(oldFilename == null || oldFilename.equals(""))) {
 						File oldFile = new File(PROFILE_PATH + oldFilename);
 						oldFile.delete();
 					}
-					int dotPosition = filename.indexOf(".");	// .의 위치는 인덱스 3번
 					String firstPart = filename.substring(0, dotPosition); // 점 이전의 부분은 "cat"이므로 firstPart 변수에 "cat"이
-					filename.replace(firstPart, uid);	//  firstPart 부분을 uid로 치환
+					filename = filename.replace(firstPart, uid);	//  firstPart 부분을 uid로 치환
 					filePart.write(PROFILE_PATH + filename);
 				} catch (Exception e) {
 					System.out.println("프로필 사진을 변경하지 않았습니다.");
 				}
-				filename = (filename == null) ? oldFilename : filename;
+				filename = (filename == null || oldFilename.equals("")) ? oldFilename : filename;
 				user = new User(uid, uname, email, filename, addr);
 				uDao.updateUser(user);
+				session.setAttribute("uname", uname);
+				session.setAttribute("email", email);
+				session.setAttribute("addr", addr);
+				session.setAttribute("profile", filename);
 				response.sendRedirect("/bbs/user/list?page=" + session.getAttribute("currentUserPage"));
 			}
 			break;
 		case "delete":
 			uid = request.getParameter("uid");
-			System.out.println(uid);
 			rd = request.getRequestDispatcher("/WEB-INF/view/user/delete.jsp?uid=" + uid);
 			rd.forward(request, response);
 			break;
