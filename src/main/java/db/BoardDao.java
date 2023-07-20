@@ -45,12 +45,42 @@ public class BoardDao {
 		return count;
 	}
 	
+	public Board getBoard(int bid) {
+		Connection conn = getConnection();
+		Board board = new Board();
+		String sql = "SELECT b.bid, b.uid, b.title, b.content, b.modTime, b.viewCount, "
+				+ "	b.replyCount, b.files, u.uname "
+				+ "	FROM board AS b JOIN users AS u ON b.uid=u.uid WHERE b.bid=?";
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1,bid);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				board.setBid(rs.getInt(1));
+				board.setUid(rs.getString(2));
+				board.setTitle(rs.getString(3));
+				board.setContent(rs.getString(4));
+				// 2023-07-19 10:41:16 ==> 2023-07-19T10:41:16
+				board.setModTime(LocalDateTime.parse(rs.getString(5).replace(" ", "T")));
+				board.setViewCount(rs.getInt(6));
+				board.setReplyCount(rs.getInt(7));
+				board.setFiles(rs.getString(8));
+				board.setUname(rs.getString(9));
+			}
+			rs.close(); pstmt.close(); conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		return board;
+	}
 	
 	public List<Board> listBoard(String field, String query, int page) {
 		Connection conn = getConnection();
 		List<Board> list = new ArrayList<Board>();
 		int offset = (page -1) * 10;
-		String sql = "SELECT b.bid, b.title, b.modTime, b.viewCount, b.replyCount, u.uname FROM board AS b "
+		String sql = "SELECT b.bid, b.uid, b.title, b.modTime, b.viewCount, b.replyCount, u.uname FROM board AS b "
 				+ "	JOIN users AS u ON b.uid=u.uid " // + " 이부분 바로다음 블랭크 있어야함 JOIN앞에 블랭크필요 조심
 				+ "	WHERE b.isDeleted=0  AND " + field + " LIKE ?"
 				+ "	ORDER BY modTime DESC, bid DESC "
@@ -64,12 +94,13 @@ public class BoardDao {
 			while (rs.next()) {
 				Board board = new Board();
 				board.setBid(rs.getInt(1));
-				board.setTitle(rs.getString(2));
+				board.setUid(rs.getString(2)); // increaseViewCount을 하려고 추가했음
+				board.setTitle(rs.getString(3));
 				// 2023-07-19 10:41:16 ==> 2023-07-19T10:41:16
-				board.setModTime(LocalDateTime.parse(rs.getString(3).replace(" ", "T")));
-				board.setViewCount(rs.getInt(4));
-				board.setReplyCount(rs.getInt(5));
-				board.setUname(rs.getString(6));
+				board.setModTime(LocalDateTime.parse(rs.getString(4).replace(" ", "T")));
+				board.setViewCount(rs.getInt(5));
+				board.setReplyCount(rs.getInt(6));
+				board.setUname(rs.getString(7));
 				list.add(board);
 			}
 			rs.close(); pstmt.close(); conn.close();
@@ -89,6 +120,34 @@ public class BoardDao {
 			pstmt.setString(2, board.getTitle());
 			pstmt.setString(3, board.getContent());
 			pstmt.setString(4, board.getFiles());
+			
+			pstmt.executeUpdate();
+			pstmt.close(); conn.close(); 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void increaseViewCount(int bid) {
+		Connection conn = getConnection();
+		String sql = "update board set viewCount=viewCount+1 where bid=?";
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, bid);
+			
+			pstmt.executeUpdate();
+			pstmt.close(); conn.close(); 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void increaseReplyCount(int bid) {
+		Connection conn = getConnection();
+		String sql = "update board set replyCount=replyCount+1 where bid=?";
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, bid);
 			
 			pstmt.executeUpdate();
 			pstmt.close(); conn.close(); 

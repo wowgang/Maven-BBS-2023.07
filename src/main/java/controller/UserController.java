@@ -188,7 +188,7 @@ public class UserController extends HttpServlet {
 				} catch (Exception e) {
 					System.out.println("프로필 사진을 변경하지 않았습니다.");
 				}
-				filename = (filename == null || oldFilename.equals("")) ? oldFilename : filename;
+				filename = (filename == null || filename.equals("")) ? oldFilename : filename;
 				user = new User(uid, uname, email, filename, addr);
 				uDao.updateUser(user);
 				session.setAttribute("uname", uname);
