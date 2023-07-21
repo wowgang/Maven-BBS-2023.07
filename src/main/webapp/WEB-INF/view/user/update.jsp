@@ -27,6 +27,7 @@
        					<form action="/bbs/user/update" method="post" enctype="multipart/form-data">
        						 <input type="hidden" name="uid" value="${user.uid}">
        						 <input type="hidden" name="filename" value="${user.profile}">
+       						 <input type="hidden" name="hashedPwd" value="${user.pwd}">
        						 <table class="table table-borderless">	                   
        						 	<tr>
 			                        <td style="width:35%"><label class="col-form-label">사용자 ID</label></td>
@@ -35,6 +36,14 @@
 			                    <tr>
 			                        <td><label class="col-form-label">이름</label></td>
 			                        <td><input type="text" name="uname" class="form-control" value="${user.uname}"></td>
+			                    </tr>
+			                  	<tr>
+			                        <td><label class="col-form-label">패스워드</label></td>
+			                        <td><input type="password" name="pwd" class="form-control"></td>
+			                    </tr>
+			                    <tr>
+			                        <td><label class="col-form-label">패스워드 확인</label></td>
+			                        <td><input type="password" name="pwd2" class="form-control"></td>
 			                    </tr>
 			                    <tr>
 			                        <td><label class="col-form-label">이메일</label></td>
@@ -50,8 +59,9 @@
 			                    </tr>
 			                    <tr>
 			                        <td colspan="2" style="text-align: center;">
-			                            <input class="btn btn-primary" type="submit" value="제출">
-			                            <input class="btn btn-secondary ms-1" type="reset" value="취소">
+			                            <input class="btn btn-primary" type="submit" value="수정">
+			                            <input class="btn btn-secondary ms-1" type="reset" value="초기화">
+			                            <input class="btn btn-secondary ms-1" type="button" onclick="history.back()" value="취소" />
 			                        </td>
 			                    </tr>
        						 

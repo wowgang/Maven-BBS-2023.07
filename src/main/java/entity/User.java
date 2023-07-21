@@ -14,7 +14,7 @@ public class User {
 	
 	public User() { }
 	
-	// update할 때 pwd제외
+	// update할 때 pwd제외였으나 추가해보자
 	public User(String uid, String uname, String email, String profile, String addr) {
 		super();
 		this.uid = uid;

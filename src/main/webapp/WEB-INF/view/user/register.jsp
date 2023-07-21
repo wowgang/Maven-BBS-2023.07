@@ -54,7 +54,8 @@
 	                    <tr>
 	                        <td colspan="2" style="text-align: center;">
 	                            <input class="btn btn-primary" type="submit" value="제출">
-	                            <input class="btn btn-secondary ms-1" type="reset" value="취소">
+	                            <input class="btn btn-secondary ms-1" type="reset" value="초기화">
+	                            <input class="btn btn-secondary ms-1" type="button" onclick="history.back()" value="취소" />
 	                        </td>
 	                    </tr>
 	                </table>

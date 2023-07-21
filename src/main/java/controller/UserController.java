@@ -169,16 +169,21 @@ public class UserController extends HttpServlet {
 				rd.forward(request, response);
 			} else {
 				uid = request.getParameter("uid");
+				String hashedPwd = request.getParameter("hashedPwd");
+				pwd = request.getParameter("pwd");
+				pwd2 = request.getParameter("pwd2");
 				String oldFilename = request.getParameter("filename");
 				uname = request.getParameter("uname");
 				email = request.getParameter("email");
 				filePart = request.getPart("profile");
 				addr = request.getParameter("addr");
-
+					
+				
+				// file update
 				try {
 					filename = filePart.getSubmittedFileName(); // cat.png
 					int dotPosition = filename.indexOf(".");	// .의 위치는 인덱스 3번
-					if (!(oldFilename == null || oldFilename.equals(""))) {
+					if (!(oldFilename == null || oldFilename.equals("")) && !(filename == null || filename.equals(""))) {
 						File oldFile = new File(PROFILE_PATH + oldFilename);
 						oldFile.delete();
 					}
@@ -188,15 +193,25 @@ public class UserController extends HttpServlet {
 				} catch (Exception e) {
 					System.out.println("프로필 사진을 변경하지 않았습니다.");
 				}
+				
+				//pwd update
+				if (!(pwd == null || pwd.equals("")) && pwd.equals(pwd2) ) { // 입력값이 있고 // pwd == pwd2 새로운 pwd
+					hashedPwd = BCrypt.hashpw(pwd, BCrypt.gensalt());
+					System.out.println(hashedPwd);
+				}   // pwd가 빈칸이면 기존 pwd가져가기
+				 
 				filename = (filename == null || filename.equals("")) ? oldFilename : filename;
-				user = new User(uid, uname, email, filename, addr);
+				user = new User(uid, hashedPwd, uname, email, filename, addr);
+			
 				uDao.updateUser(user);
+				session.setAttribute("pwd", pwd);
 				session.setAttribute("uname", uname);
 				session.setAttribute("email", email);
 				session.setAttribute("addr", addr);
 				session.setAttribute("profile", filename);
 				response.sendRedirect("/bbs/user/list?page=" + session.getAttribute("currentUserPage"));
-			}
+				
+			}// update
 			break;
 		case "delete":
 			uid = request.getParameter("uid");
@@ -209,7 +224,8 @@ public class UserController extends HttpServlet {
 			response.sendRedirect("/bbs/user/list?page=" + session.getAttribute("currentUserPage"));
 			break;
 		default: 
-			System.out.println(request.getRequestURI() + "잘못된 경로 입니다.");
+			rd = request.getRequestDispatcher("/WEB-INF/view/error/error404.jsp");
+			rd.forward(request, response);
 		}// switch
 		
 		
