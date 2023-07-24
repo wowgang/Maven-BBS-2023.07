@@ -1,5 +1,13 @@
 package entity;
 
+/*
+ * /// pwd업데이트 추가시
+ * user entity에서 생성자 맞추고 순서 중요
+ * userDao에서 sql문에 pwd추가해주기
+ * userController에서 pwd,pwd2,hashedpwd 받고
+ * 패스워드 변경하면 pwd,pwd2 동일한지 확인하고 변경한pwd로 업데이트해주고
+ * pwd,pwd2가 빈칸이면 기존pwd가져가기로 controller update추가해줘야함
+ */
 import java.time.LocalDate;
 
 public class User {
@@ -25,6 +33,7 @@ public class User {
 	}	
 	
 	// insert할 때 default값 제외한 생성자 
+	// pwd 추가 이 생성자 사용할건데 순서 이거와 맞게 컨트롤러에서사용
 	public User(String uid, String pwd, String uname, String email, String profile, String addr) {
 		super();
 		this.uid = uid;

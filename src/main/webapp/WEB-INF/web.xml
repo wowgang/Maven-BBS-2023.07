@@ -9,13 +9,33 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
-  
   <error-page>
-  	<error-code>404</error-code>
-  	<location>/WEB-INF/view/error/error404.jsp</location>
+    <error-code>404</error-code>
+    <location>/WEB-INF/view/error/error404.jsp</location>
   </error-page>
   <error-page>
-  	<error-code>500</error-code>
-  	<location>/WEB-INF/view/error/error500.jsp</location>
+    <error-code>500</error-code>
+    <location>/WEB-INF/view/error/error500.jsp</location>
   </error-page>
+  <servlet>
+    <description></description>
+    <display-name>AsideContoroller</display-name>
+    <servlet-name>AsideContoroller</servlet-name>
+    <servlet-class>controller.AsideContoroller</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AsideContoroller</servlet-name>
+    <url-pattern>/AsideContoroller</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>AsideController</display-name>
+    <servlet-name>AsideController</servlet-name>
+    <servlet-class>controller.AsideController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AsideController</servlet-name>
+    <url-pattern>/AsideController</url-pattern>
+  </servlet-mapping>
+
 </web-app>

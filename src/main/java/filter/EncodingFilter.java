@@ -16,7 +16,9 @@ import javax.servlet.http.HttpSession;
 /**
  * Servlet Filter implementation class BbsFilter
  */
-@WebFilter({"/board/*", "/file/*", "/reply/*", "/user/*"})
+// @WebFilter("/*") 나한테 들어오는 모든것을 encoding하겠다.  
+//controller에서는 개별적으로 주는게 맞음
+@WebFilter({"/aside/*", "/board/*", "/file/*", "/reply/*", "/user/*"})
 public class EncodingFilter extends HttpFilter implements Filter {
        
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {

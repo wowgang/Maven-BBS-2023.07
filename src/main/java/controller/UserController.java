@@ -2,6 +2,7 @@ package controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import db.UserDao;
 import entity.User;
+import utillity.AsideUtil;
 import utillity.UserService;
 
 /**
@@ -69,6 +71,7 @@ public class UserController extends HttpServlet {
 			break;
 			
 		case "login":
+			
 			if (request.getMethod().equals("GET")) {
 				rd = request.getRequestDispatcher("/WEB-INF/view/user/login.jsp");
 				rd.forward(request, response);
@@ -85,6 +88,14 @@ public class UserController extends HttpServlet {
 					session.setAttribute("addr", user.getAddr());
 					session.setAttribute("profile", user.getProfile());
 					
+					// 상태 메세지
+					// context root = src = "/bbs
+					// D:\JavaWorkspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\bbs\WEB-INF/data/todayQuote.txt
+					String quoteFile = getServletContext().getRealPath("/") + "WEB-INF/data/todayQuote.txt";
+					System.out.println(quoteFile);
+					AsideUtil au = new AsideUtil();
+					String stateMsg = au.getTodayQuote(quoteFile);
+					session.setAttribute("stateMsg", stateMsg);
 					
 					// 환영 메세지
 					request.setAttribute("msg", user.getUname() + "님 환영합니다.");
@@ -169,7 +180,7 @@ public class UserController extends HttpServlet {
 				rd.forward(request, response);
 			} else {
 				uid = request.getParameter("uid");
-				String hashedPwd = request.getParameter("hashedPwd");
+				String hashedPwd = request.getParameter("hashedPwd"); // 기존pwd 암호화한것 가져온것 // pwd가 빈칸이면 기존 pwd가져가기
 				pwd = request.getParameter("pwd");
 				pwd2 = request.getParameter("pwd2");
 				String oldFilename = request.getParameter("filename");
@@ -193,23 +204,33 @@ public class UserController extends HttpServlet {
 				} catch (Exception e) {
 					System.out.println("프로필 사진을 변경하지 않았습니다.");
 				}
+				filename = (filename == null || filename.equals("")) ? oldFilename : filename;
 				
 				//pwd update
+				boolean pwdFlag = false;
 				if (!(pwd == null || pwd.equals("")) && pwd.equals(pwd2) ) { // 입력값이 있고 // pwd == pwd2 새로운 pwd
 					hashedPwd = BCrypt.hashpw(pwd, BCrypt.gensalt());
 					System.out.println(hashedPwd);
-				}   // pwd가 빈칸이면 기존 pwd가져가기
+					pwdFlag = true;
+					//PrintWriter out = response.getWriter();
+					//out.print("<script>alert('패스워드가 변경이 되었습니다.');</script>");
+				} // pwd가 빈칸이면 기존 pwd가져가기
 				 
-				filename = (filename == null || filename.equals("")) ? oldFilename : filename;
-				user = new User(uid, hashedPwd, uname, email, filename, addr);
-			
+				user = new User(uid, hashedPwd, uname, email, filename, addr); // pwd가 빈칸이면 기존 pwd가져가기
 				uDao.updateUser(user);
-				session.setAttribute("pwd", pwd);
 				session.setAttribute("uname", uname);
 				session.setAttribute("email", email);
 				session.setAttribute("addr", addr);
 				session.setAttribute("profile", filename);
-				response.sendRedirect("/bbs/user/list?page=" + session.getAttribute("currentUserPage"));
+				
+				
+				if  (pwdFlag) {
+					request.setAttribute("msg", "패스워드가 변경이 되었습니다.");
+					request.setAttribute("url", "/bbs/user/list?page=" + session.getAttribute("currentUserPage"));
+					rd = request.getRequestDispatcher("/WEB-INF/view/common/alertMsg.jsp");
+					rd.forward(request, response);
+				} else
+					response.sendRedirect("/bbs/user/list?page=" + session.getAttribute("currentUserPage"));
 				
 			}// update
 			break;

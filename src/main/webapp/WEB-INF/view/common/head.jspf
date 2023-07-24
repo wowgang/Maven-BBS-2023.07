@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%-- <head> 태그안에 공통으로 들어갈 내용 --%>
+<%-- <head> 태그 내에 공통으로 들어갈 내용 --%>
 
     <title>Maven BBS sample</title>
     <meta charset="utf-8">
@@ -13,3 +13,4 @@
         * { font-family: 'Noto Sans KR', sans-serif; }
         a { text-decoration: none; }
     </style>
+    <script src="/bbs/js/aside.js"></script>

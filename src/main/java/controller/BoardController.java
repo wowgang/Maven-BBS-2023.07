@@ -111,12 +111,14 @@ public class BoardController extends HttpServlet {
 			List<Reply> replyList = rDao.getReplyList(bid);
 			request.setAttribute("replyList", replyList);
 			
-			rd = request.getRequestDispatcher("/WEB-INF/view/board/detail.jsp");
+//			rd = request.getRequestDispatcher("/WEB-INF/view/board/detail.jsp");
+			rd = request.getRequestDispatcher("/WEB-INF/view/board/detailEditor.jsp");
 			rd.forward(request, response);
 			break;
 		case "write":
 			if (request.getMethod().equals("GET")) {
-				rd = request.getRequestDispatcher("/WEB-INF/view/board/write.jsp");
+//				rd = request.getRequestDispatcher("/WEB-INF/view/board/write.jsp");
+				rd = request.getRequestDispatcher("/WEB-INF/view/board/writeEditor.jsp"); // 게시판 글쓰기부분을 변경한것임 글쓰기스탈있는걸로
 				rd.forward(request, response);
 			} else {	// 입력된 데이터 받기
 				title = request.getParameter("title");
@@ -148,7 +150,8 @@ public class BoardController extends HttpServlet {
 				request.setAttribute("board",  board);
 				fileList = ju.jsonToList(board.getFiles());
 				session.setAttribute("fileList", fileList);
-				rd = request.getRequestDispatcher("/WEB-INF/view/board/update.jsp");
+//				rd = request.getRequestDispatcher("/WEB-INF/view/board/update.jsp");
+				rd = request.getRequestDispatcher("/WEB-INF/view/board/updateEditor.jsp");
 				rd.forward(request, response);
 			} else {
 				bid = Integer.parseInt(request.getParameter("bid"));
