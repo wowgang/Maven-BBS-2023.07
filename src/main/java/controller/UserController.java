@@ -204,7 +204,13 @@ public class UserController extends HttpServlet {
 				} catch (Exception e) {
 					System.out.println("프로필 사진을 변경하지 않았습니다.");
 				}
-				filename = (filename == null || filename.equals("")) ? oldFilename : filename;
+//				filename = (filename == null || filename.equals("")) ? oldFilename : filename;
+				if (!(filename == null || filename.equals(""))) {
+					AsideUtil au = new AsideUtil();
+					filename = au.squareImage(filename);
+				} else
+					filename = oldFilename;
+				
 				
 				//pwd update
 				boolean pwdFlag = false;
